@@ -37,8 +37,9 @@ length(unique(CITES_Countries_ER$Name_for_CITESdb)) # 1666
 
 ## Check each party is only present for the series it is a party to cites
 
-Check2 <- CITES_Countries_ER %>% unite("Check", c(4,6), remove = FALSE) %>% filter(!Check %in% NLP_dat$Check) %>% tally(n)
-CITES_Countries_ER_Final <- CITES_Countries_ER %>% unite("Check", c(4,6), remove = FALSE) %>% filter(Check %in% NLP_dat$Check) %>% select(-Check, - filt)
+Check2 <- CITES_Countries_ER %>% unite("Check", c(6,8), remove = FALSE) %>% filter(!Check %in% NLP_dat$Check) %>% tally(n)
+CITES_Countries_ER_Final <- CITES_Countries_ER %>% unite("Check", c(6,8), remove = FALSE) %>% 
+  filter(Check %in% NLP_dat$Check) %>% select(-Check, - filt)
 
 write.csv(CITES_Countries_ER_Final, "Data/3_CITES_Vert_dat_ER.csv", na = "")
 write_rds(CITES_Countries_ER_Final, "Data/3_CITES_Vert_dat_ER.rds")
@@ -62,8 +63,8 @@ length(unique(CITES_Countries_IR$Name_for_CITESdb)) # 1675
 
 ## Check each party is only present for the series it is a party to cites
 
-Check2 <- CITES_Countries_IR %>% unite("Check", c(5,6), remove = FALSE) %>% filter(!Check %in% NLP_dat$Check) %>% tally(n)
-CITES_Countries_IR_Final <- CITES_Countries_IR %>% unite("Check", c(4,6), remove = FALSE) %>% filter(Check %in% NLP_dat$Check) %>% select(-Check, - filt)
+Check2 <- CITES_Countries_IR %>% unite("Check", c(7,8), remove = FALSE) %>% filter(!Check %in% NLP_dat$Check) %>% tally(n)
+CITES_Countries_IR_Final <- CITES_Countries_IR %>% unite("Check", c(7,8), remove = FALSE) %>% filter(Check %in% NLP_dat$Check) %>% select(-Check, - filt)
 
 write.csv(CITES_Countries_IR_Final, "Data/3_CITES_Vert_dat_IR.csv", na = "")
 write_rds(CITES_Countries_IR_Final, "Data/3_CITES_Vert_dat_IR.rds")
