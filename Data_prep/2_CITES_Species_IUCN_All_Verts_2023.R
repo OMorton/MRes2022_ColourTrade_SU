@@ -407,7 +407,7 @@ length(unique(CITES_Vert_Clean$Taxon)) ## 1858 species
 ## Get all trades to volumes per species per year
 CITES_Vert_pro <- CITES_Vert_Clean %>% filter(Reporter.type == "E") %>%
   ## Group and tally per species/year
-  group_by(Year, Taxon, Class, Exporter, Importer, FL_year, Year_DEL, Source_clean, Live) %>% 
+  group_by(Year, Taxon, Order, Family, Class, Exporter, Importer, FL_year, Year_DEL, Source_clean, Live) %>% 
   tally(WOE) %>% group_by(Taxon, Class, Exporter) %>% filter(n() > 0) %>%
   ## here we remove record for species that are not cites listed and as such lack a year they were listed
   filter(!is.na(FL_year)) %>% mutate(FL_year = as.numeric(FL_year), Year_DEL = as.numeric(Year_DEL))
@@ -448,7 +448,7 @@ CITES_Vert_pro <- CITES_Vert_pro %>% mutate(FL_year = case_when(Taxon == "Anas f
                                                                  TRUE ~ Year_DEL))
 
 ## Make time frame
-Species_timeframe_base <- CITES_Vert_pro %>% group_by(Taxon, Class, Exporter, Importer) %>% 
+Species_timeframe_base <- CITES_Vert_pro %>% group_by(Taxon, Class, Order, Family, Exporter, Importer) %>% 
   summarise(Year = seq(from = min(FL_year), to = max(Year_DEL), length.out = max(Year_DEL) - min(FL_year) + 1))
 
 Species_timeframe <- rbind(mutate(Species_timeframe_base, Source_clean = "Wild", Live = "Live"),
@@ -456,7 +456,7 @@ Species_timeframe <- rbind(mutate(Species_timeframe_base, Source_clean = "Wild",
                            mutate(Species_timeframe_base, Source_clean = "Wild", Live = "Not live"),
                            mutate(Species_timeframe_base, Source_clean = "Captive", Live = "Not live"))
 ## Make correct TT one
-TT_sp <- Species_timeframe %>% filter(Taxon == "Trionyx triunguis") %>% group_by(Taxon, Class, Exporter, Importer, Source_clean, Live) %>% tally() %>% select(-n)
+TT_sp <- Species_timeframe %>% filter(Taxon == "Trionyx triunguis") %>% group_by(Taxon, Class,Order, Family, Exporter, Importer, Source_clean, Live) %>% tally() %>% select(-n)
 TS_sp <- data.frame(Taxon = "Trionyx triunguis", Year = c(1976:2007, 2017:2020))         
 TT_correct <- full_join(TT_sp, TS_sp)
 
@@ -473,7 +473,7 @@ CITES_Vert_pro %>% ungroup() %>% distinct(Taxon) %>% filter(!Taxon %in% unique(S
 
 
 ## Expand the data set to fill missing years between 2000 - 2020
-CITES_Wild_Com_Exp <- left_join(Species_timeframe_full, CITES_Vert_pro, by = c("Taxon", "Class", "Year", "Exporter", "Importer", "Source_clean", "Live"))
+CITES_Wild_Com_Exp <- left_join(Species_timeframe_full, CITES_Vert_pro, by = c("Taxon", "Class", "Order", "Family", "Year", "Exporter", "Importer", "Source_clean", "Live"))
 
 ## 1668
 length(unique(CITES_Wild_Com_Exp$Taxon))
@@ -528,7 +528,7 @@ write_rds(CITES_IUCN_data, "Data/2_CITES_Vert_Exp_Reported.rds")
 ## Get all trades to volumes per species per year
 CITES_Vert_pro_I <- CITES_Vert %>% filter(Reporter.type == "I") %>%
   ## Group and tally per species/year
-  group_by(Year, Taxon, Class, Exporter, Importer, FL_year, Year_DEL, Source_clean, Live) %>% 
+  group_by(Year, Taxon, Class, Order, Family, Exporter, Importer, FL_year, Year_DEL, Source_clean, Live) %>% 
   tally(WOE) %>% group_by(Taxon, Class, Exporter) %>% filter(n() > 0) %>%
   ## here we remove record for species that are not cites listed and as such lack a year they were listed
   filter(!is.na(FL_year)) %>% mutate(FL_year = as.numeric(FL_year), Year_DEL = as.numeric(Year_DEL))
@@ -571,7 +571,7 @@ CITES_Vert_pro_I <- CITES_Vert_pro_I %>% mutate(FL_year = case_when(Taxon == "An
                                                                      TRUE ~ Year_DEL))
 
 ## Make time frame
-Species_timeframe_base_I <- CITES_Vert_pro_I %>% group_by(Taxon, Class, Exporter, Importer) %>% 
+Species_timeframe_base_I <- CITES_Vert_pro_I %>% group_by(Taxon, Class,Order, Family, Exporter, Importer) %>% 
   summarise(Year = seq(from = min(FL_year), to = max(Year_DEL), length.out = max(Year_DEL) - min(FL_year) + 1))
 
 Species_timeframe_I <- rbind(mutate(Species_timeframe_base_I, Source_clean = "Wild", Live = "Live"),
@@ -579,7 +579,7 @@ Species_timeframe_I <- rbind(mutate(Species_timeframe_base_I, Source_clean = "Wi
                              mutate(Species_timeframe_base_I, Source_clean = "Wild", Live = "Not live"),
                              mutate(Species_timeframe_base_I, Source_clean = "Captive", Live = "Not live"))
 ## Make correct TT one
-TT_sp <- Species_timeframe_I %>% filter(Taxon == "Trionyx triunguis") %>% group_by(Taxon, Class, Exporter, Importer, Source_clean, Live) %>% tally() %>% select(-n)
+TT_sp <- Species_timeframe_I %>% filter(Taxon == "Trionyx triunguis") %>% group_by(Taxon, Class, Order, Family, Exporter, Importer, Source_clean, Live) %>% tally() %>% select(-n)
 TS_sp <- data.frame(Taxon = "Trionyx triunguis", Year = c(1976:2007, 2017:2020))         
 TT_correct <- full_join(TT_sp, TS_sp)
 
@@ -593,7 +593,8 @@ length(unique(Species_timeframe_full_I$Taxon))
 length(unique(CITES_Vert_pro_I$Taxon))
 
 ## Expand the data set to fill missing years between 2000 - 2018
-CITES_Wild_Com_Imp <- left_join(Species_timeframe_full_I, CITES_Vert_pro_I, by = c("Taxon", "Class", "Year", "Exporter", "Importer", "Source_clean", "Live"))
+CITES_Wild_Com_Imp <- left_join(Species_timeframe_full_I, CITES_Vert_pro_I, by = c("Taxon", "Class","Order", "Family",
+                                                                                   "Year", "Exporter", "Importer", "Source_clean", "Live"))
 
 ## 1679
 length(unique(CITES_Wild_Com_Imp$Taxon))
