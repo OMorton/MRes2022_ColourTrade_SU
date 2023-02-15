@@ -17,7 +17,7 @@ length(unique(Aves_CITES_Data$Exporter))
 # 1 country dif to AJ's list as we only keep imp/exp pairs where both are known
 # AJ had LV which only exported to XX (once)
 
-write.csv(Aves_CITES_Data, "Data/4_SU_Aves_ER.csv", na = "")
+write.csv(Aves_CITES_Data, "G:/My Drive/TUoS/Teaching/Masters/2022/Shriya Uday/Project/Data/4_SU_Aves_ER.csv", na = "")
 
 ## IR
 Aves_CITES_Data_IR <- CITESFull_IR %>% filter(Class == "Aves", Source_clean == "Wild") %>%
@@ -26,4 +26,5 @@ Aves_CITES_Data_IR <- CITESFull_IR %>% filter(Class == "Aves", Source_clean == "
   mutate(Subspecies = ifelse(str_count(Taxon, "\\S+") > 2, "Yes", "No"))
 
 
-write.csv(Aves_CITES_Data_IR, "Data/4_SU_Aves_IR.csv", na = "")
+write.csv(Aves_CITES_Data_IR, 
+          "G:/My Drive/TUoS/Teaching/Masters/2022/Shriya Uday/Project/Data/4_SU_Aves_IR.csv", na = "")
